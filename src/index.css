@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   THEME TOKENS
+   Mirrors the client's PDF: black nav/footer, white content, bold
+   Poppins headings. These become Tailwind utilities automatically,
+   e.g. bg-ink, text-paper, font-display, max-w-page.
+   ADJUST HERE if the client gives you brand colors later — everything
+   in the components reads from these classes.
+------------------------------------------------------------------- */
+@theme {
+  --color-ink: #0a0a0a;       /* near-black used everywhere instead of pure #000 */
+  --color-paper: #ffffff;
+  --color-paper-soft: #fafafa;
+  --color-mist-100: #f2f2f2;
+  --color-mist-300: #d9d9d9;
+  --color-mist-500: #8a8a8a;
+  --color-mist-700: #4a4a4a;
+  --color-patreon: #f1665e;   /* Patreon brand red used only on the About page badge */
+
+  --font-display: 'Poppins', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  --spacing-nav: 64px;
+  --spacing-subbar: 44px;
+  --max-width-page: 1400px;
+}
+
+body {
+  @apply bg-paper text-ink font-body antialiased;
+}
+
+h1, h2, h3, h4 {
+  @apply font-display;
+}
+
+/* Reusable buttons, kept as component classes so JSX doesn't turn into a
+   giant utility soup wherever a "Shop" / outline button appears. */
+@layer components {
+  .btn-pill {
+    @apply bg-ink text-paper px-5 py-2 rounded-md text-sm font-medium transition
+           hover:opacity-85 active:scale-[0.97];
+  }
+
+  .btn-outline {
+    @apply bg-transparent text-paper border border-paper px-5 py-2.5 rounded
+           text-sm transition hover:bg-paper hover:text-ink;
+  }
+}
