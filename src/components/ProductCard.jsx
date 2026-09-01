@@ -3,13 +3,19 @@
  * Shows the artwork, a title/price overlay, and a "FREE" badge
  * when price is 0.
  *
- * PAYMENT NOTE: clicking a card currently does nothing (onClick is a
- * placeholder). This is where you'd navigate to a product detail page
- * or open an "Add to cart" / checkout flow once payments are wired up
- * (e.g. Stripe, Paystack, or M-Pesa for a Kenya-based client).
+ * Clicking the card opens the product detail page.
  */
-export default function ProductCard({ image, title, price, tall = false }) {
+import { useNavigate } from 'react-router-dom'
+
+export default function ProductCard({
+  id,
+  image,
+  title,
+  price,
+  tall = false,
+}) {
   const isFree = price === 0
+  const navigate = useNavigate()
 
   return (
     <button
@@ -19,8 +25,7 @@ export default function ProductCard({ image, title, price, tall = false }) {
         (tall ? 'row-span-2 min-h-[460px]' : '')
       }
       onClick={() => {
-        // TODO: hook this up to a product detail / checkout route.
-        console.log('Open product:', title)
+        navigate(`/products/${id}`)
       }}
     >
       <img
@@ -37,8 +42,13 @@ export default function ProductCard({ image, title, price, tall = false }) {
       )}
 
       <div className="absolute inset-x-0 bottom-0 px-3.5 pt-6 pb-2.5 bg-gradient-to-t from-black/75 to-transparent flex items-end justify-between gap-2">
-        <span className="text-paper text-sm font-medium leading-tight">{title}</span>
-        <span className="text-mist-300 text-xs whitespace-nowrap">{isFree ? '$0' : `$${price}`}</span>
+        <span className="text-paper text-sm font-medium leading-tight">
+          {title}
+        </span>
+
+        <span className="text-mist-300 text-xs whitespace-nowrap">
+          {isFree ? '$0' : `$${price}`}
+        </span>
       </div>
     </button>
   )

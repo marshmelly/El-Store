@@ -35,7 +35,7 @@ export default function Assets3D() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-0.5 grid-flow-dense">
             {filtered.map((p) => (
-              <ProductCard key={p.id} image={p.image} title={p.title} price={p.price} />
+              <ProductCard key={p.id} id={p.id} image={p.image} title={p.title} price={p.price} />
             ))}
           </div>
         )}

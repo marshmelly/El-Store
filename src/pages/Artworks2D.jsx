@@ -37,6 +37,7 @@ export default function Artworks2D() {
             {filtered.map((p) => (
               <ProductCard
                 key={p.id}
+                id={p.id}
                 image={p.image}
                 title={p.title}
                 price={p.price}
