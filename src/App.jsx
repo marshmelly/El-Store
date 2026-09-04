@@ -14,6 +14,9 @@ import ProductDetails from './pages/ProductDetails.jsx'
 import CartPage from './pages/CartPage.jsx'
 import Checkout from './pages/Checkout.jsx'
 
+import Login from './pages/LogIn.jsx'
+import Signup from './pages/SignUp.jsx'
+
 function App() {
   return (
     <>
@@ -37,6 +40,10 @@ function App() {
         <Route path="/contact" element={<Contact />} />
 
         <Route path="/checkout" element={<Checkout />} />
+
+        <Route path="/login" element={<Login />} />
+
+        <Route path="/signup" element={<Signup />} />
       </Routes>
 
       <Footer />
