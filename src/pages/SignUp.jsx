@@ -80,7 +80,7 @@ const handleSignup = async (event) => {
         break
 
       default:
-        setError('Unable to create your account. Please try again.')
+        setError(error.message ||'Unable to create your account. Please try again.')
     }
   } finally {
     setLoading(false)
@@ -222,7 +222,7 @@ const handleGoogleSignup = async () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Your full name"
-              autocomplete="name"
+              autoComplete="name"
               required
               className="w-full rounded-sm border border-ink/15 bg-white px-4 py-3 text-sm text-ink outline-none transition focus:border-ink"
             />
@@ -243,7 +243,7 @@ const handleGoogleSignup = async () => {
               name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              autocomplete="email"
+              autoComplete="email"
               placeholder="you@example.com"
               required
               className="w-full rounded-sm border border-ink/15 bg-white px-4 py-3 text-sm text-ink outline-none transition focus:border-ink"
@@ -266,7 +266,7 @@ const handleGoogleSignup = async () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Create a password"
-              autocomplete="new-password"
+              autoComplete="new-password"
               required
               minLength={6}
               className="w-full rounded-sm border border-ink/15 bg-white px-4 py-3 text-sm text-ink outline-none transition focus:border-ink"
@@ -293,7 +293,7 @@ const handleGoogleSignup = async () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm your password"
-              autocomplete="new-password"
+              autoComplete="new-password"
               required
               minLength={6}
               className="w-full rounded-sm border border-ink/15 bg-white px-4 py-3 text-sm text-ink outline-none transition focus:border-ink"

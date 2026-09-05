@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
 
 import Navbar from './components/Navbar.jsx'
 import Footer from './components/Footer.jsx'
@@ -16,13 +17,27 @@ import Checkout from './pages/Checkout.jsx'
 
 import Login from './pages/LogIn.jsx'
 import Signup from './pages/SignUp.jsx'
+import Account from './pages/Account.jsx'
+
+import ResetPassword from './pages/ResetPassword.jsx'
+
+import { useAuth } from './context/AuthContext.jsx'
 
 function App() {
+
+  const { user, loading, isLoggedIn } = useAuth()
+
+      console.log('Auth loading:', loading)
+      console.log('Logged in:', isLoggedIn)
+      console.log('Current user:', user) 
   return (
     <>
       <Navbar />
 
       <Routes>
+
+        {/* Public Routes */}
+
         <Route path="/" element={<Home />} />
 
         <Route path="/2d-artworks" element={<Artworks2D />} />
@@ -44,6 +59,16 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/signup" element={<Signup />} />
+
+        <Route path="/reset-password" element={<ResetPassword />}
+/>
+
+        {/* Protected Routes */}
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/account" element={<Account />} />
+        </Route>  
+
       </Routes>
 
       <Footer />

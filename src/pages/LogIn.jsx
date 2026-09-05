@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
   signInWithPopup,
 } from 'firebase/auth'
 
@@ -10,6 +11,9 @@ import { auth } from '../firebaseConfigFolder/auth'
 
 export default function Login() {
   const navigate = useNavigate()
+  const location = useLocation()
+
+  const destination = location.state?.from?.pathname || '/'
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -17,6 +21,12 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState('')
+
+  const [resetEmail, setResetEmail] = useState('')
+  const [resetLoading, setResetLoading] = useState(false)
+  const [resetMessage, setResetMessage] = useState('')
+
+  const [ showReset, setShowReset ] = useState(false)
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -31,7 +41,7 @@ export default function Login() {
         password
       )
 
-      navigate('/')
+      navigate(destination, { replace: true })
     } catch (error) {
       console.error('Login failed:', error)
 
@@ -82,6 +92,55 @@ export default function Login() {
       setGoogleLoading(false)
     }
   }
+
+  const handlePasswordReset = async (event) => {
+    event.preventDefault()
+
+    setError('')
+    setResetMessage('')
+
+  if (!resetEmail.trim()) {
+    setError('Please enter your email address.')
+    return
+  }
+
+  setResetLoading(true)
+
+  try {
+    await sendPasswordResetEmail(auth, resetEmail.trim())
+
+    setResetMessage(
+      'Password reset email sent. Check your inbox.'
+    )
+
+    setResetEmail('')
+  } catch (error) {
+    console.error('Password reset failed:', error)
+
+    switch (error.code) {
+      case 'auth/invalid-email':
+        setError('Please enter a valid email address.')
+        break
+
+      case 'auth/user-not-found':
+        setError('No account was found with that email.')
+        break
+
+      case 'auth/too-many-requests':
+        setError(
+          'Too many attempts. Please wait a while and try again.'
+        )
+        break
+
+      default:
+        setError(
+          'Unable to send the password reset email. Please try again.'
+        )
+    }
+  } finally {
+    setResetLoading(false)
+  }
+}
 
   return (
     <main className="min-h-screen bg-paper px-6 py-20">
@@ -198,10 +257,16 @@ export default function Login() {
               </label>
 
               <button
-                type="button"
-                className="text-xs text-ink/50 transition hover:text-ink"
+                   type="button"
+                    onClick={() => {
+                         setResetEmail(email)
+                         setResetMessage('')
+                         setError('')
+                         setShowReset((current) => !current)
+                    }}
+                          className="text-xs text-ink/50 transition hover:text-ink"
               >
-                Forgot password?
+                   {showReset ? 'Close' : 'Forgot password?'}
               </button>
             </div>
 
@@ -230,6 +295,47 @@ export default function Login() {
           </button>
 
         </form>
+
+      {showReset && (
+  <div className="mt-10 border-t border-mist-100 pt-8">
+    <p className="text-xs font-bold uppercase tracking-[0.2em] text-ink/50">
+      Reset password
+    </p>
+
+    <p className="mt-2 text-sm text-ink/60">
+      Enter your email and we'll send you a link to create a new password.
+    </p>
+
+    <form
+      onSubmit={handlePasswordReset}
+      className="mt-5 space-y-4"
+    >
+      <input
+        type="email"
+        value={resetEmail}
+        onChange={(event) => setResetEmail(event.target.value)}
+        placeholder="Email address"
+        autoComplete="email"
+        required
+        className="w-full rounded-sm border border-ink/15 bg-white px-4 py-3 text-sm text-ink outline-none transition focus:border-ink"
+      />
+
+      <button
+        type="submit"
+        disabled={resetLoading}
+        className="w-full rounded-sm bg-ink px-4 py-3 text-sm font-bold tracking-wide text-paper transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {resetLoading ? 'SENDING...' : 'SEND RESET LINK'}
+      </button>
+    </form>
+
+    {resetMessage && (
+      <p className="mt-4 text-sm font-medium text-green-600">
+        {resetMessage}
+      </p>
+    )}
+  </div>
+)}
 
         {/* Signup */}
         <div className="mt-8 text-center text-sm text-ink/60">
