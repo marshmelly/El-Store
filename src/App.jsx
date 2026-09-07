@@ -18,6 +18,8 @@ import Checkout from './pages/Checkout.jsx'
 import Login from './pages/LogIn.jsx'
 import Signup from './pages/SignUp.jsx'
 import Account from './pages/Account.jsx'
+import Orders from './pages/Orders.jsx'
+import Downloads from './pages/Downloads.jsx'
 
 import ResetPassword from './pages/ResetPassword.jsx'
 
@@ -67,6 +69,8 @@ function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/account" element={<Account />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/downloads" element={<Downloads />} />
         </Route>  
 
       </Routes>

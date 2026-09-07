@@ -93,11 +93,12 @@ export default function Login() {
     }
   }
 
-  const handlePasswordReset = async (event) => {
-    event.preventDefault()
 
-    setError('')
-    setResetMessage('')
+const handlePasswordReset = async (event) => {
+  event.preventDefault()
+
+  setError('')
+  setResetMessage('')
 
   if (!resetEmail.trim()) {
     setError('Please enter your email address.')
@@ -107,7 +108,16 @@ export default function Login() {
   setResetLoading(true)
 
   try {
-    await sendPasswordResetEmail(auth, resetEmail.trim())
+    const actionCodeSettings = {
+      url: `${window.location.origin}/reset-password`,
+      handleCodeInApp: true,
+    }
+
+    await sendPasswordResetEmail(
+      auth,
+      resetEmail.trim(),
+      actionCodeSettings
+    )
 
     setResetMessage(
       'Password reset email sent. Check your inbox.'
@@ -141,6 +151,10 @@ export default function Login() {
     setResetLoading(false)
   }
 }
+
+
+
+
 
   return (
     <main className="min-h-screen bg-paper px-6 py-20">
