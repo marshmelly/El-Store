@@ -7,9 +7,8 @@ import {
   createProduct,
   updateProduct,
   setProductActive,
-  deleteProduct,
+  archiveProduct,
 } from '../services/productService.js'
-
 
 const EMPTY_FORM = {
   id: '',
@@ -243,38 +242,44 @@ export default function AdminDashboard() {
 
 
   /*
-   * DELETE PRODUCT
-   */
-  const handleDelete = async (product) => {
-    const confirmed = window.confirm(
-      `Delete "${product.title}" permanently?`
-    )
+ * ARCHIVE PRODUCT
+ *
+ * We deliberately archive instead of permanently deleting.
+ *
+ * This keeps the product record available for future
+ * order / purchase / download history.
+ */
+const handleArchive = async (product) => {
+  const confirmed = window.confirm(
+    `Archive "${product.title}"? This will remove it from the public store.`
+  )
 
-    if (!confirmed) {
-      return
-    }
-
-    try {
-      setError('')
-      setMessage('')
-
-      await deleteProduct(product.id)
-
-      setMessage('Product deleted.')
-
-      await loadProducts()
-    } catch (error) {
-      console.error(
-        'Failed to delete product:',
-        error
-      )
-
-      setError(
-        'Unable to delete product.'
-      )
-    }
+  if (!confirmed) {
+    return
   }
 
+  try {
+    setError('')
+    setMessage('')
+
+    await archiveProduct(product.id)
+
+    setMessage(
+      `"${product.title}" has been archived.`
+    )
+
+    await loadProducts()
+  } catch (error) {
+    console.error(
+      'Failed to archive product:',
+      error
+    )
+
+    setError(
+      'Unable to archive product.'
+    )
+  }
+}
 
   return (
     <main className="min-h-screen bg-paper px-6 py-12">
@@ -695,16 +700,18 @@ export default function AdminDashboard() {
                           </button>
 
 
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleDelete(product)
-                            }
-                            className="rounded-sm border border-red-200 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50"
-                          >
-                            DELETE
+                         <button
+                              type="button"
+                              onClick={() =>
+                                      handleArchive(product)
+                                       }
+                               disabled={product.archived === true}
+                               className="rounded-sm border border-red-200 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40"
+                           >
+                             {product.archived
+                                   ? 'ARCHIVED'
+                                   : 'ARCHIVE'}
                           </button>
-
                         </div>
 
                       </td>

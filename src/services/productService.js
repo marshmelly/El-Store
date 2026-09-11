@@ -5,7 +5,6 @@ import {
   getDocs,
   setDoc,
   updateDoc,
-  deleteDoc,
   query,
   where,
   orderBy,
@@ -121,10 +120,11 @@ export async function createProduct(product) {
     thumbnailUrl: product.thumbnailUrl || '',
     imageUrl: product.imageUrl || '',
 
-    active: product.active !== false,
+   active: product.active !== false,
+   archived: false,
 
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
+  createdAt: serverTimestamp(),
+  updatedAt: serverTimestamp(),
   })
 }
 
@@ -182,12 +182,38 @@ export async function setProductActive(productId, active) {
  * we may choose to remove this option entirely and rely
  * only on active/inactive status.
  */
-export async function deleteProduct(productId) {
+/*
+ * ARCHIVE PRODUCT
+ *
+ * We do NOT permanently delete products from the
+ * admin dashboard.
+ *
+ * Instead, we mark the product as inactive.
+ *
+ * Why?
+ *
+ * A product may eventually be connected to:
+ *
+ * - orders
+ * - purchases
+ * - downloads
+ *
+ * Permanently deleting the product could leave those
+ * records pointing to something that no longer exists.
+ *
+ * So "Archive" simply makes the product inactive.
+ */
+export async function archiveProduct(productId) {
   const productRef = doc(
     db,
     PRODUCTS_COLLECTION,
     productId
   )
 
-  await deleteDoc(productRef)
+  await updateDoc(productRef, {
+    active: false,
+    archived: true,
+    archivedAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  })
 }
