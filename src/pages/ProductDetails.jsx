@@ -536,7 +536,7 @@ export default function ProductDetails() {
             >
 
               {cart.some(
-                (item) => item.id === product.id
+                (item) => item.productId === product.id
               )
                 ? 'ADDED TO CART'
                 : `ADD TO CART — $${product.price}`}

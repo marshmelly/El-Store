@@ -211,35 +211,55 @@ export default function AdminDashboard() {
   /*
    * ACTIVATE / DEACTIVATE PRODUCT
    */
-  const handleToggleActive = async (product) => {
-    try {
-      setError('')
-      setMessage('')
+ /*
+ * ACTIVATE / DEACTIVATE PRODUCT
+ *
+ * Archived products cannot be reactivated from here.
+ *
+ * This prevents an administrator from accidentally
+ * bringing an intentionally archived product back into
+ * the public store.
+ */
+const handleToggleActive = async (product) => {
 
-      await setProductActive(
-        product.id,
-        !product.active
-      )
+  if (product.archived === true) {
+    setError(
+      'Archived products cannot be activated.'
+    )
 
-      setMessage(
-        product.active
-          ? 'Product deactivated.'
-          : 'Product activated.'
-      )
-
-      await loadProducts()
-    } catch (error) {
-      console.error(
-        'Failed to change product status:',
-        error
-      )
-
-      setError(
-        'Unable to change product status.'
-      )
-    }
+    return
   }
 
+  try {
+
+    setError('')
+    setMessage('')
+
+    await setProductActive(
+      product.id,
+      !product.active
+    )
+
+    setMessage(
+      product.active
+        ? 'Product deactivated.'
+        : 'Product activated.'
+    )
+
+    await loadProducts()
+
+  } catch (error) {
+
+    console.error(
+      'Failed to change product status:',
+      error
+    )
+
+    setError(
+      'Unable to change product status.'
+    )
+  }
+}
 
   /*
  * ARCHIVE PRODUCT
@@ -688,17 +708,19 @@ const handleArchive = async (product) => {
 
 
                           <button
-                            type="button"
-                            onClick={() =>
-                              handleToggleActive(product)
-                            }
-                            className="rounded-sm border border-ink/15 px-3 py-2 text-xs font-semibold text-ink hover:bg-mist-100"
+                              type="button"
+                               onClick={() =>
+                                        handleToggleActive(product)
+                                       }
+                                disabled={product.archived === true}
+                                 className="rounded-sm border border-ink/15 px-3 py-2 text-xs font-semibold text-ink hover:bg-mist-100 disabled:cursor-not-allowed disabled:opacity-40"
                           >
-                            {product.active
-                              ? 'DEACTIVATE'
-                              : 'ACTIVATE'}
-                          </button>
-
+                            {product.archived
+                                      ? 'ARCHIVED'
+                                      : product.active
+                                      ? 'DEACTIVATE'
+                                        : 'ACTIVATE'}
+                         </button>
 
                          <button
                               type="button"
